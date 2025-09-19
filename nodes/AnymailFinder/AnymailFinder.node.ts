@@ -48,7 +48,7 @@ export class AnymailFinder implements INodeType {
 					},
 					{
 						name: 'Company Email',
-						value: 'companyEmails',
+						value: 'companyEmail',
 						description: 'Find all emails at a company',
 					},
 					{
@@ -74,6 +74,7 @@ export class AnymailFinder implements INodeType {
 				],
 				default: 'personEmail',
 			},
+			// Person Email Operations
 			{
 				displayName: 'Operation',
 				name: 'operation',
@@ -90,21 +91,11 @@ export class AnymailFinder implements INodeType {
 						value: 'findEmail',
 						description: 'Find a person\'s email by name and company',
 						action: 'Find a person\'s email',
-						routing: {
-							request: {
-								method: 'POST',
-								url: '/v5.1/find-email/person',
-								body: {
-									full_name: '={{$parameter["fullName"]}}',
-									domain: '={{$parameter["domain"] || undefined}}',
-									company_name: '={{$parameter["companyName"] || undefined}}',
-								},
-							},
-						},
 					},
 				],
 				default: 'findEmail',
 			},
+			// Company Email Operations
 			{
 				displayName: 'Operation',
 				name: 'operation',
@@ -112,29 +103,20 @@ export class AnymailFinder implements INodeType {
 				noDataExpression: true,
 				displayOptions: {
 					show: {
-						resource: ['companyEmails'],
+						resource: ['companyEmail'],
 					},
 				},
 				options: [
 					{
 						name: 'Find Emails',
 						value: 'findEmails',
-						description: 'Find all emails at a company',
+						description: 'Find all emails at a company (up to 20)',
 						action: 'Find company emails',
-						routing: {
-							request: {
-								method: 'POST',
-								url: '/v5.1/find-email/company',
-								body: {
-									domain: '={{$parameter["domain"] || undefined}}',
-									company_name: '={{$parameter["companyName"] || undefined}}',
-								},
-							},
-						},
 					},
 				],
 				default: 'findEmails',
 			},
+			// Decision Maker Operations
 			{
 				displayName: 'Operation',
 				name: 'operation',
@@ -151,20 +133,11 @@ export class AnymailFinder implements INodeType {
 						value: 'findEmail',
 						description: 'Find decision maker\'s email',
 						action: 'Find decision maker email',
-						routing: {
-							request: {
-								method: 'POST',
-								url: '/v5.1/find-email/decision-maker',
-								body: {
-									domain: '={{$parameter["domain"] || undefined}}',
-									company_name: '={{$parameter["companyName"] || undefined}}',
-								},
-							},
-						},
 					},
 				],
 				default: 'findEmail',
 			},
+			// LinkedIn Email Operations
 			{
 				displayName: 'Operation',
 				name: 'operation',
@@ -181,19 +154,11 @@ export class AnymailFinder implements INodeType {
 						value: 'findEmail',
 						description: 'Find email by LinkedIn profile URL',
 						action: 'Find email by LinkedIn URL',
-						routing: {
-							request: {
-								method: 'POST',
-								url: '/v5.1/find-email/linkedin-url',
-								body: {
-									linkedin_url: '={{$parameter["linkedinUrl"]}}',
-								},
-							},
-						},
 					},
 				],
 				default: 'findEmail',
 			},
+			// Email Verification Operations
 			{
 				displayName: 'Operation',
 				name: 'operation',
@@ -210,19 +175,11 @@ export class AnymailFinder implements INodeType {
 						value: 'verifyEmail',
 						description: 'Verify if an email address is valid',
 						action: 'Verify email address',
-						routing: {
-							request: {
-								method: 'POST',
-								url: '/v5.1/verify-email',
-								body: {
-									email: '={{$parameter["email"]}}',
-								},
-							},
-						},
 					},
 				],
 				default: 'verifyEmail',
 			},
+			// Account Info Operations
 			{
 				displayName: 'Operation',
 				name: 'operation',
@@ -239,17 +196,37 @@ export class AnymailFinder implements INodeType {
 						value: 'getInfo',
 						description: 'Get account details and remaining credits',
 						action: 'Get account information',
-						routing: {
-							request: {
-								method: 'GET',
-								url: '/v5.0/meta/account.json',
-							},
-						},
 					},
 				],
 				default: 'getInfo',
 			},
-			// Person Email Parameters
+
+			// =================== PERSON EMAIL PARAMETERS ===================
+			{
+				displayName: 'Name Input Method',
+				name: 'nameInputMethod',
+				type: 'options',
+				displayOptions: {
+					show: {
+						resource: ['personEmail'],
+						operation: ['findEmail'],
+					},
+				},
+				options: [
+					{
+						name: 'Full Name',
+						value: 'fullName',
+						description: 'Enter the person\'s full name',
+					},
+					{
+						name: 'First & Last Name',
+						value: 'firstLast',
+						description: 'Enter first and last name separately',
+					},
+				],
+				default: 'fullName',
+				description: 'Choose how to provide the person\'s name',
+			},
 			{
 				displayName: 'Full Name',
 				name: 'fullName',
@@ -259,12 +236,98 @@ export class AnymailFinder implements INodeType {
 					show: {
 						resource: ['personEmail'],
 						operation: ['findEmail'],
+						nameInputMethod: ['fullName'],
 					},
 				},
 				default: '',
 				description: 'The full name of the person (e.g., "John Doe")',
 			},
-			// Decision Maker Parameters
+			{
+				displayName: 'First Name',
+				name: 'firstName',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['personEmail'],
+						operation: ['findEmail'],
+						nameInputMethod: ['firstLast'],
+					},
+				},
+				default: '',
+				description: 'The person\'s first name',
+			},
+			{
+				displayName: 'Last Name',
+				name: 'lastName',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['personEmail'],
+						operation: ['findEmail'],
+						nameInputMethod: ['firstLast'],
+					},
+				},
+				default: '',
+				description: 'The person\'s last name',
+			},
+			{
+				displayName: 'Domain',
+				name: 'domain',
+				type: 'string',
+				displayOptions: {
+					show: {
+						resource: ['personEmail'],
+						operation: ['findEmail'],
+					},
+				},
+				default: '',
+				description: 'Company domain (e.g., "microsoft.com"). Use either domain or company name.',
+			},
+			{
+				displayName: 'Company Name',
+				name: 'companyName',
+				type: 'string',
+				displayOptions: {
+					show: {
+						resource: ['personEmail'],
+						operation: ['findEmail'],
+					},
+				},
+				default: '',
+				description: 'Company name (e.g., "Microsoft"). Domain is preferred for better accuracy.',
+			},
+
+			// =================== COMPANY EMAIL PARAMETERS ===================
+			{
+				displayName: 'Domain',
+				name: 'domain',
+				type: 'string',
+				displayOptions: {
+					show: {
+						resource: ['companyEmail'],
+						operation: ['findEmails'],
+					},
+				},
+				default: '',
+				description: 'Company domain (e.g., "microsoft.com"). Use either domain or company name.',
+			},
+			{
+				displayName: 'Company Name',
+				name: 'companyName',
+				type: 'string',
+				displayOptions: {
+					show: {
+						resource: ['companyEmail'],
+						operation: ['findEmails'],
+					},
+				},
+				default: '',
+				description: 'Company name (e.g., "Microsoft"). Domain is preferred for better accuracy.',
+			},
+
+			// =================== DECISION MAKER PARAMETERS ===================
 			{
 				displayName: 'Domain',
 				name: 'domain',
@@ -276,7 +339,7 @@ export class AnymailFinder implements INodeType {
 					},
 				},
 				default: '',
-				description: 'Company domain (e.g., "example.com"). Use either domain or company name.',
+				description: 'Company domain (e.g., "microsoft.com"). Use either domain or company name.',
 			},
 			{
 				displayName: 'Company Name',
@@ -289,7 +352,7 @@ export class AnymailFinder implements INodeType {
 					},
 				},
 				default: '',
-				description: 'Company name (e.g., "Apple Inc"). Use either domain or company name.',
+				description: 'Company name (e.g., "Microsoft"). Domain is preferred for better accuracy.',
 			},
 			{
 				displayName: 'Decision Maker Category',
@@ -339,7 +402,8 @@ export class AnymailFinder implements INodeType {
 				default: 'ceo',
 				description: 'The department or role category to search for',
 			},
-			// LinkedIn Email Parameters
+
+			// =================== LINKEDIN EMAIL PARAMETERS ===================
 			{
 				displayName: 'LinkedIn URL',
 				name: 'linkedinUrl',
@@ -352,9 +416,11 @@ export class AnymailFinder implements INodeType {
 					},
 				},
 				default: '',
-				description: 'LinkedIn profile URL',
+				placeholder: 'https://www.linkedin.com/in/username/',
+				description: 'LinkedIn profile URL of the person',
 			},
-			// Email Verification Parameters
+
+			// =================== EMAIL VERIFICATION PARAMETERS ===================
 			{
 				displayName: 'Email',
 				name: 'email',
@@ -370,72 +436,33 @@ export class AnymailFinder implements INodeType {
 				default: '',
 				description: 'Email address to verify',
 			},
-			// Additional Fields
+
+			// =================== ADDITIONAL OPTIONS ===================
 			{
-				displayName: 'Additional Fields',
-				name: 'additionalFields',
+				displayName: 'Additional Options',
+				name: 'additionalOptions',
 				type: 'collection',
-				placeholder: 'Add Field',
+				placeholder: 'Add Option',
 				default: {},
 				displayOptions: {
 					show: {
-						resource: ['personEmail'],
-						operation: ['findEmail'],
+						resource: ['personEmail', 'companyEmail', 'decisionMaker', 'linkedinEmail', 'emailVerification'],
 					},
 				},
 				options: [
 					{
-						displayName: 'First Name',
-						name: 'firstName',
+						displayName: 'Webhook URL',
+						name: 'webhookUrl',
 						type: 'string',
 						default: '',
-						description: 'Person\'s first name (alternative to full name)',
+						description: 'URL to receive webhook callback when result is ready (instead of waiting for response)',
 					},
 					{
-						displayName: 'Last Name',
-						name: 'lastName',
-						type: 'string',
-						default: '',
-						description: 'Person\'s last name (alternative to full name)',
-					},
-					{
-						displayName: 'Position',
-						name: 'position',
-						type: 'string',
-						default: '',
-						description: 'Person\'s job title or position',
-					},
-					{
-						displayName: 'Department',
-						name: 'department',
-						type: 'string',
-						default: '',
-						description: 'Department the person works in',
-					},
-				],
-			},
-			{
-				displayName: 'Additional Fields',
-				name: 'additionalFields',
-				type: 'collection',
-				placeholder: 'Add Field',
-				default: {},
-				displayOptions: {
-					show: {
-						resource: ['companyEmails'],
-						operation: ['findEmails'],
-					},
-				},
-				options: [
-					{
-						displayName: 'Limit',
-						name: 'limit',
+						displayName: 'Timeout (seconds)',
+						name: 'timeout',
 						type: 'number',
-						typeOptions: {
-							minValue: 1,
-						},
-						default: 50,
-						description: 'Max number of results to return',
+						default: 180,
+						description: 'Request timeout in seconds. Recommended: 180 seconds for searches.',
 					},
 				],
 			},
@@ -450,14 +477,25 @@ export class AnymailFinder implements INodeType {
 			try {
 				const resource = this.getNodeParameter('resource', i) as string;
 				const operation = this.getNodeParameter('operation', i) as string;
+				const additionalOptions = this.getNodeParameter('additionalOptions', i, {}) as any;
 
 				let responseData;
+				let requestOptions: any = {
+					json: true,
+					timeout: (additionalOptions.timeout || 180) * 1000,
+				};
+
+				// Add webhook header if provided
+				if (additionalOptions.webhookUrl) {
+					requestOptions.headers = {
+						'x-webhook-url': additionalOptions.webhookUrl,
+					};
+				}
 
 				if (resource === 'personEmail' && operation === 'findEmail') {
-					const fullName = this.getNodeParameter('fullName', i) as string;
+					const nameInputMethod = this.getNodeParameter('nameInputMethod', i) as string;
 					const domain = this.getNodeParameter('domain', i, '') as string;
 					const companyName = this.getNodeParameter('companyName', i, '') as string;
-					const additionalFields = this.getNodeParameter('additionalFields', i, {}) as any;
 
 					if (!domain && !companyName) {
 						throw new NodeOperationError(this.getNode(), 'Either domain or company name must be provided', {
@@ -467,32 +505,33 @@ export class AnymailFinder implements INodeType {
 
 					const body: any = {};
 
-					if (additionalFields.firstName && additionalFields.lastName) {
-						body.first_name = additionalFields.firstName;
-						body.last_name = additionalFields.lastName;
-					} else {
+					if (nameInputMethod === 'fullName') {
+						const fullName = this.getNodeParameter('fullName', i) as string;
 						body.full_name = fullName;
+					} else {
+						const firstName = this.getNodeParameter('firstName', i) as string;
+						const lastName = this.getNodeParameter('lastName', i) as string;
+						body.first_name = firstName;
+						body.last_name = lastName;
 					}
 
 					if (domain) body.domain = domain;
 					if (companyName) body.company_name = companyName;
-					if (additionalFields.position) body.position = additionalFields.position;
-					if (additionalFields.department) body.department = additionalFields.department;
 
 					responseData = await this.helpers.requestWithAuthentication.call(
 						this,
 						'anymailFinderApi',
 						{
 							method: 'POST',
-							url: 'https://api.anymailfinder.com/v5.1/find-email/person',
+							url: 'https://api.anymailfinder.com/v5.0/search/person.json',
 							body,
-							json: true,
+							...requestOptions,
 						},
 					);
-				} else if (resource === 'companyEmails' && operation === 'findEmails') {
+
+				} else if (resource === 'companyEmail' && operation === 'findEmails') {
 					const domain = this.getNodeParameter('domain', i, '') as string;
 					const companyName = this.getNodeParameter('companyName', i, '') as string;
-					const additionalFields = this.getNodeParameter('additionalFields', i, {}) as any;
 
 					if (!domain && !companyName) {
 						throw new NodeOperationError(this.getNode(), 'Either domain or company name must be provided', {
@@ -503,8 +542,6 @@ export class AnymailFinder implements INodeType {
 					const body: any = {};
 					if (domain) body.domain = domain;
 					if (companyName) body.company_name = companyName;
-					if (additionalFields.department) body.department = additionalFields.department;
-					if (additionalFields.limit) body.limit = additionalFields.limit;
 
 					responseData = await this.helpers.requestWithAuthentication.call(
 						this,
@@ -513,9 +550,10 @@ export class AnymailFinder implements INodeType {
 							method: 'POST',
 							url: 'https://api.anymailfinder.com/v5.1/find-email/company',
 							body,
-							json: true,
+							...requestOptions,
 						},
 					);
+
 				} else if (resource === 'decisionMaker' && operation === 'findEmail') {
 					const domain = this.getNodeParameter('domain', i, '') as string;
 					const companyName = this.getNodeParameter('companyName', i, '') as string;
@@ -538,11 +576,12 @@ export class AnymailFinder implements INodeType {
 						'anymailFinderApi',
 						{
 							method: 'POST',
-							url: 'https://api.anymailfinder.com/v5.1/find-email/decision-maker',
+							url: 'https://api.anymailfinder.com/v5.0/search/decision-maker.json',
 							body,
-							json: true,
+							...requestOptions,
 						},
 					);
+
 				} else if (resource === 'linkedinEmail' && operation === 'findEmail') {
 					const linkedinUrl = this.getNodeParameter('linkedinUrl', i) as string;
 
@@ -551,11 +590,12 @@ export class AnymailFinder implements INodeType {
 						'anymailFinderApi',
 						{
 							method: 'POST',
-							url: 'https://api.anymailfinder.com/v5.1/find-email/linkedin-url',
+							url: 'https://api.anymailfinder.com/v5.0/search/linkedin-url.json',
 							body: { linkedin_url: linkedinUrl },
-							json: true,
+							...requestOptions,
 						},
 					);
+
 				} else if (resource === 'emailVerification' && operation === 'verifyEmail') {
 					const email = this.getNodeParameter('email', i) as string;
 
@@ -566,17 +606,18 @@ export class AnymailFinder implements INodeType {
 							method: 'POST',
 							url: 'https://api.anymailfinder.com/v5.1/verify-email',
 							body: { email },
-							json: true,
+							...requestOptions,
 						},
 					);
+
 				} else if (resource === 'accountInfo' && operation === 'getInfo') {
 					responseData = await this.helpers.requestWithAuthentication.call(
 						this,
 						'anymailFinderApi',
 						{
 							method: 'GET',
-							url: 'https://api.anymailfinder.com/v5.0/meta/account.json',
-							json: true,
+							url: 'https://api.anymailfinder.com/v5.1/account',
+							...requestOptions,
 						},
 					);
 				}
