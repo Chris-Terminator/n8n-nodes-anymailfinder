@@ -1,48 +1,124 @@
-![Banner image](https://user-images.githubusercontent.com/10284570/173569848-c624317f-42b1-45a6-ab09-f0ea3c247648.png)
+# n8n-nodes-anymailfinder
 
-# n8n-nodes-starter
+![n8n.io - Workflow Automation](https://raw.githubusercontent.com/n8n-io/n8n/master/assets/n8n-logo.png)
 
-This repo contains example nodes to help you get started building your own custom integrations for [n8n](https://n8n.io). It includes the node linter and other dependencies.
+This is an n8n community node that lets you use [Anymailfinder](https://anymailfinder.com) in your n8n workflows.
 
-To make your custom node available to the community, you must create it as an npm package, and [submit it to the npm registry](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry).
+Anymailfinder is a powerful email discovery and verification service that helps you find and verify email addresses for lead generation, sales prospecting, and marketing campaigns.
 
-If you would like your node to be available on n8n cloud you can also [submit your node for verification](https://docs.n8n.io/integrations/creating-nodes/deploy/submit-community-nodes/).
+[n8n](https://n8n.io/) is a [fair-code licensed](https://docs.n8n.io/reference/license/) workflow automation platform.
 
-## Prerequisites
+[Installation](#installation)  
+[Operations](#operations)  
+[Credentials](#credentials)  
+[Compatibility](#compatibility)  
+[Usage](#usage)  
+[Resources](#resources)  
 
-You need the following installed on your development machine:
+## Installation
 
-* [git](https://git-scm.com/downloads)
-* Node.js and npm. Minimum version Node 20. You can find instructions on how to install both using nvm (Node Version Manager) for Linux, Mac, and WSL [here](https://github.com/nvm-sh/nvm). For Windows users, refer to Microsoft's guide to [Install NodeJS on Windows](https://docs.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-windows).
-* Install n8n with:
-  ```
-  npm install n8n -g
-  ```
-* Recommended: follow n8n's guide to [set up your development environment](https://docs.n8n.io/integrations/creating-nodes/build/node-development-environment/).
+Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation.
 
-## Using this starter
+1. Go to **Settings > Community Nodes**.
+2. Select **Install**.
+3. Enter `n8n-nodes-anymailfinder` in **Enter npm package name**.
+4. Agree to the [risks](https://docs.n8n.io/integrations/community-nodes/risks/) of using community nodes: select **I understand the risks of installing unverified code from a public source**.
+5. Select **Install**.
 
-These are the basic steps for working with the starter. For detailed guidance on creating and publishing nodes, refer to the [documentation](https://docs.n8n.io/integrations/creating-nodes/).
+After installing the node, you can use it like any other node. n8n displays the node in search results in the **Nodes** panel.
 
-1. [Generate a new repository](https://github.com/n8n-io/n8n-nodes-starter/generate) from this template repository.
-2. Clone your new repo:
-   ```
-   git clone https://github.com/<your organization>/<your-repo-name>.git
-   ```
-3. Run `npm i` to install dependencies.
-4. Open the project in your editor.
-5. Browse the examples in `/nodes` and `/credentials`. Modify the examples, or replace them with your own nodes.
-6. Update the `package.json` to match your details.
-7. Run `npm run lint` to check for errors or `npm run lintfix` to automatically fix errors when possible.
-8. Test your node locally. Refer to [Run your node locally](https://docs.n8n.io/integrations/creating-nodes/test/run-node-locally/) for guidance.
-9. Replace this README with documentation for your node. Use the [README_TEMPLATE](README_TEMPLATE.md) to get started.
-10. Update the LICENSE file to use your details.
-11. [Publish](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry) your package to npm.
+## Operations
 
-## More information
+### Person Email
+- **Find Email**: Find a person's email address by providing their name and company information
 
-Refer to our [documentation on creating nodes](https://docs.n8n.io/integrations/creating-nodes/) for detailed information on building your own nodes.
+### Company Emails  
+- **Find Emails**: Find all email addresses associated with a company
+
+### Decision Maker
+- **Find Email**: Find decision maker's email address at a company
+
+### LinkedIn Email
+- **Find Email**: Find email address associated with a LinkedIn profile URL
+
+### Email Verification
+- **Verify Email**: Verify if an email address is valid and deliverable
+
+### Account Info
+- **Get Info**: Retrieve account details and remaining API credits
+
+## Credentials
+
+You need an Anymailfinder API key to use this node. You can get your API key by:
+
+1. Creating an account at [Anymailfinder](https://anymailfinder.com)
+2. Going to **My Account > API** in your dashboard
+3. Clicking **Enable API** to generate your API key
+
+The API key should be entered in the credentials configuration in n8n.
+
+## Compatibility
+
+- Minimum n8n version: **0.198.0**
+- Tested with n8n version: **1.0.0+**
+
+## Usage
+
+### Finding a Person's Email
+
+1. Add the Anymailfinder node to your workflow
+2. Select **Person Email** as the resource
+3. Choose **Find Email** as the operation
+4. Enter the person's full name
+5. Provide either the company domain (e.g., "apple.com") or company name (e.g., "Apple Inc")
+6. Configure your Anymailfinder API credentials
+7. Execute the workflow
+
+### Verifying Email Addresses
+
+1. Add the Anymailfinder node to your workflow
+2. Select **Email Verification** as the resource
+3. Choose **Verify Email** as the operation
+4. Enter the email address to verify
+5. Execute the workflow
+
+### Getting Account Information
+
+1. Add the Anymailfinder node to your workflow
+2. Select **Account Info** as the resource
+3. Choose **Get Info** as the operation
+4. Execute the workflow to see your remaining credits
+
+## Cost Information
+
+- **Person Email Search**: 1 credit (only charged for valid emails found)
+- **Company Email Search**: 1 credit per valid email found
+- **Decision Maker Search**: 1 credit per valid email found
+- **LinkedIn Email Search**: 1 credit per valid email found
+- **Email Verification**: 0.2 credits per verification
+- **Account Info**: Free
+
+Searches that don't find valid emails or return risky/blacklisted emails are free. Duplicate searches within 30 days are also free.
+
+## Rate Limits
+
+Anymailfinder doesn't impose hard rate limits. The system automatically scales to handle high volumes of requests. However, searches are performed in real-time and can take up to 2 minutes for complex queries.
+
+## Error Handling
+
+The node includes comprehensive error handling for:
+- Invalid API credentials
+- Missing required parameters
+- API timeouts
+- Network errors
+- Invalid email formats
+
+## Resources
+
+* [n8n community nodes documentation](https://docs.n8n.io/integrations/community-nodes/)
+* [Anymailfinder API documentation](https://anymailfinder.com/email-finder-api/docs)
+* [Anymailfinder website](https://anymailfinder.com)
 
 ## License
 
-[MIT](https://github.com/n8n-io/n8n-nodes-starter/blob/master/LICENSE.md)
+[MIT](https://github.com/your-username/n8n-nodes-anymailfinder/blob/master/LICENSE.md)
