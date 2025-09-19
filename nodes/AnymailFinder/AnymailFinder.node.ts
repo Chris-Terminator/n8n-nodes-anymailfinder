@@ -264,14 +264,15 @@ export class AnymailFinder implements INodeType {
 				default: '',
 				description: 'The full name of the person (e.g., "John Doe")',
 			},
+			// Decision Maker Parameters
 			{
 				displayName: 'Domain',
 				name: 'domain',
 				type: 'string',
 				displayOptions: {
 					show: {
-						resource: ['personEmail', 'companyEmails', 'decisionMaker'],
-						operation: ['findEmail', 'findEmails'],
+						resource: ['decisionMaker'],
+						operation: ['findEmail'],
 					},
 				},
 				default: '',
@@ -283,12 +284,60 @@ export class AnymailFinder implements INodeType {
 				type: 'string',
 				displayOptions: {
 					show: {
-						resource: ['personEmail', 'companyEmails', 'decisionMaker'],
-						operation: ['findEmail', 'findEmails'],
+						resource: ['decisionMaker'],
+						operation: ['findEmail'],
 					},
 				},
 				default: '',
 				description: 'Company name (e.g., "Apple Inc"). Use either domain or company name.',
+			},
+			{
+				displayName: 'Decision Maker Category',
+				name: 'decisionMakerCategory',
+				type: 'options',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['decisionMaker'],
+						operation: ['findEmail'],
+					},
+				},
+				options: [
+					{
+						name: 'CEO / Owner / President / Founder',
+						value: 'ceo',
+					},
+					{
+						name: 'Engineering',
+						value: 'engineering',
+					},
+					{
+						name: 'Finance',
+						value: 'finance',
+					},
+					{
+						name: 'Human Resources (HR)',
+						value: 'hr',
+					},
+					{
+						name: 'Information Technology (IT)',
+						value: 'it',
+					},
+					{
+						name: 'Logistics',
+						value: 'logistics',
+					},
+					{
+						name: 'Marketing',
+						value: 'marketing',
+					},
+					{
+						name: 'Operations / Administration',
+						value: 'operations',
+					},
+				],
+				default: 'ceo',
+				description: 'The department or role category to search for',
 			},
 			// LinkedIn Email Parameters
 			{
@@ -373,18 +422,11 @@ export class AnymailFinder implements INodeType {
 				default: {},
 				displayOptions: {
 					show: {
-						resource: ['companyEmails', 'decisionMaker'],
-						operation: ['findEmail', 'findEmails'],
+						resource: ['companyEmails'],
+						operation: ['findEmails'],
 					},
 				},
 				options: [
-					{
-						displayName: 'Department',
-						name: 'department',
-						type: 'string',
-						default: '',
-						description: 'Filter by department',
-					},
 					{
 						displayName: 'Limit',
 						name: 'limit',
@@ -477,7 +519,7 @@ export class AnymailFinder implements INodeType {
 				} else if (resource === 'decisionMaker' && operation === 'findEmail') {
 					const domain = this.getNodeParameter('domain', i, '') as string;
 					const companyName = this.getNodeParameter('companyName', i, '') as string;
-					const additionalFields = this.getNodeParameter('additionalFields', i, {}) as any;
+					const decisionMakerCategory = this.getNodeParameter('decisionMakerCategory', i) as string;
 
 					if (!domain && !companyName) {
 						throw new NodeOperationError(this.getNode(), 'Either domain or company name must be provided', {
@@ -485,10 +527,11 @@ export class AnymailFinder implements INodeType {
 						});
 					}
 
-					const body: any = {};
+					const body: any = {
+						decision_maker_category: decisionMakerCategory,
+					};
 					if (domain) body.domain = domain;
 					if (companyName) body.company_name = companyName;
-					if (additionalFields.department) body.department = additionalFields.department;
 
 					responseData = await this.helpers.requestWithAuthentication.call(
 						this,
