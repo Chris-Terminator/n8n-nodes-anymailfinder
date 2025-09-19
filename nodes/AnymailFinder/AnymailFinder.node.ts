@@ -42,12 +42,12 @@ export class AnymailFinder implements INodeType {
 				noDataExpression: true,
 				options: [
 					{
-						name: 'Person Email',
-						value: 'personEmail',
-						description: 'Find a person\'s email address',
+						name: 'Account Info',
+						value: 'accountInfo',
+						description: 'Get account details and credits',
 					},
 					{
-						name: 'Company Emails',
+						name: 'Company Email',
 						value: 'companyEmails',
 						description: 'Find all emails at a company',
 					},
@@ -57,19 +57,19 @@ export class AnymailFinder implements INodeType {
 						description: 'Find decision maker\'s email',
 					},
 					{
-						name: 'LinkedIn Email',
-						value: 'linkedinEmail',
-						description: 'Find email by LinkedIn URL',
-					},
-					{
 						name: 'Email Verification',
 						value: 'emailVerification',
 						description: 'Verify if an email is valid',
 					},
 					{
-						name: 'Account Info',
-						value: 'accountInfo',
-						description: 'Get account details and credits',
+						name: 'LinkedIn Email',
+						value: 'linkedinEmail',
+						description: 'Find email by LinkedIn URL',
+					},
+					{
+						name: 'Person Email',
+						value: 'personEmail',
+						description: 'Find a person\'s email address',
 					},
 				],
 				default: 'personEmail',
@@ -310,6 +310,7 @@ export class AnymailFinder implements INodeType {
 				displayName: 'Email',
 				name: 'email',
 				type: 'string',
+				placeholder: 'name@email.com',
 				required: true,
 				displayOptions: {
 					show: {
@@ -388,8 +389,11 @@ export class AnymailFinder implements INodeType {
 						displayName: 'Limit',
 						name: 'limit',
 						type: 'number',
-						default: 10,
-						description: 'Maximum number of emails to return',
+						typeOptions: {
+							minValue: 1,
+						},
+						default: 50,
+						description: 'Max number of results to return',
 					},
 				],
 			},
