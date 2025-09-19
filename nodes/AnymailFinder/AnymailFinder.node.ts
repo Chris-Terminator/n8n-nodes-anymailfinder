@@ -4,6 +4,7 @@ import {
 	INodeType,
 	INodeTypeDescription,
 	NodeOperationError,
+	NodeConnectionType,
 } from 'n8n-workflow';
 
 export class AnymailFinder implements INodeType {
@@ -18,8 +19,8 @@ export class AnymailFinder implements INodeType {
 		defaults: {
 			name: 'Anymailfinder',
 		},
-		inputs: ['main'],
-		outputs: ['main'],
+		inputs: [NodeConnectionType.Main],
+		outputs: [NodeConnectionType.Main],
 		credentials: [
 			{
 				name: 'anymailFinderApi',
