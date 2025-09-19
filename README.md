@@ -93,8 +93,8 @@ The API key should be entered in the credentials configuration in n8n.
 
 - **Person Email Search**: 1 credit (only charged for valid emails found)
 - **Company Email Search**: 1 credit per valid email found
-- **Decision Maker Search**: 1 credit per valid email found
-- **LinkedIn Email Search**: 1 credit per valid email found
+- **Decision Maker Search**: 2 credit per valid email found
+- **LinkedIn Email Search**: 2 credit per valid email found
 - **Email Verification**: 0.2 credits per verification
 - **Account Info**: Free
 
