@@ -69,7 +69,7 @@ export class AnymailFinder implements INodeType {
 					{
 						name: 'Person Email',
 						value: 'personEmail',
-						description: 'Find a person\'s email address',
+						description: "Find a person's email address",
 					},
 				],
 				default: 'personEmail',
