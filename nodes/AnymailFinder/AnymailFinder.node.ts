@@ -90,7 +90,8 @@ export class AnymailFinder implements INodeType {
 						name: 'Find Email',
 						value: 'findEmail',
 						description: "Find a person's email by name and company",
-						action: 'Find email of person',
+						// eslint-disable-next-line n8n-nodes-base/node-param-operation-option-action-miscased
+						action: 'Find person\'s email',
 					},
 				],
 				default: 'findEmail',
