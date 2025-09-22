@@ -153,7 +153,7 @@ export class AnymailFinder implements INodeType {
 						name: 'Find Email',
 						value: 'findEmail',
 						description: 'Find email by LinkedIn profile URL',
-						action: 'Find email by LinkedIn Url',
+						action: 'Find email by LinkedIn URL',
 					},
 				],
 				default: 'findEmail',
